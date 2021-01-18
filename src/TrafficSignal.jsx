@@ -2,11 +2,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { changeSignal } from './redux/actionCreators';
 import redSignal from './images/redSignal.jpeg';
 import yellowSignal from './images/yellowSignal.jpeg';
 import greenSignal from './images/greenSignal.jpeg';
+import Context from './contextAPIs'
 
 const renderSignal = (signalColor) => {
   if (signalColor === 'red') return redSignal;
@@ -15,34 +14,34 @@ const renderSignal = (signalColor) => {
   return null;
 };
 
-const TrafficSignal = ({ signalColor, changeSignal }) => {
+const TrafficSignal = () => {
   return (
-    <div>
-      <div className="button-container">
-        <button onClick={() => changeSignal('red')} type="button">
-          Red
+    <Context.Consumer>
+      {
+        ({ trafficSignal, handleClick }) => (
+      <div>
+        <div className="button-container">
+          <button onClick={() => handleClick('trafficSignal', 'red')} type="button">
+            Red
         </button>
-        <button onClick={() => changeSignal('yellow')} type="button">
-          Yellow
+          <button onClick={() => handleClick('trafficSignal', 'yellow')} type="button">
+            Yellow
         </button>
-        <button onClick={() => changeSignal('green')} type="button">
-          Green
+          <button onClick={() => handleClick('trafficSignal', 'green')} type="button">
+            Green
         </button>
+        </div>
+        <img className="signal" src={renderSignal(trafficSignal)} alt={`${trafficSignal} light image`} />
       </div>
-      <img className="signal" src={renderSignal(signalColor)} alt="" />
-    </div>
+        )
+      }
+    </Context.Consumer>
   );
 };
 
-const mapStateToProps = (state) => ({
-  signalColor: state.trafficReducer.signal.color
-});
-
-const mapDispatchToProps = { changeSignal };
-
 TrafficSignal.propTypes = {
-  changeSignal: PropTypes.func.isRequired,
-  signalColor: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  trafficSignal: PropTypes.string.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TrafficSignal);
+export default TrafficSignal;
